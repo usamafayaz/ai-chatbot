@@ -7,10 +7,10 @@ import ChatMessages from '../components/ChatMessages';
 import ChatInput from '../components/ChatInput';
 import LoadingIndicator from '../components/LoadingIndicator';
 import Toast from 'react-native-toast-message';
-import apiUrl from '../config/apiUrl';
+import apiKey from '../config/apiKey';
 
 // Initialize the API
-const genAI = new GoogleGenerativeAI(apiUrl.url);
+const genAI = new GoogleGenerativeAI(apiKey.API_KEY);
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState([]);
