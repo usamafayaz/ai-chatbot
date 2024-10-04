@@ -37,8 +37,8 @@ AI ChatBot enables users to send messages and receive conversational responses f
    ```
 
 3. Install React Native packages and dependencies:
-   ```npm install
-
+   ```bash
+   npm install
    ```
 4. Setup your Gemini API_KEY
 

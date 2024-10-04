@@ -1,5 +1,5 @@
 // components/ChatScreen.js
-import React, {useState, useRef} from 'react';
+import React, {useState} from 'react';
 import {View, StyleSheet, Clipboard} from 'react-native';
 import {GoogleGenerativeAI} from '@google/generative-ai';
 import ChatHeader from '../components/ChatHeader';
@@ -15,7 +15,6 @@ const genAI = new GoogleGenerativeAI(apiKey.API_KEY);
 const ChatScreen = () => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const scrollViewRef = useRef();
 
   const handleSend = async text => {
     if (text.trim() === '') return;
@@ -66,7 +65,6 @@ const ChatScreen = () => {
       <ChatHeader />
       <ChatMessages
         messages={messages}
-        scrollViewRef={scrollViewRef}
         onMessageLongPress={handleMessageLongPress}
       />
       {isLoading && <LoadingIndicator />}

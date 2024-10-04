@@ -7,7 +7,7 @@ const App = () => {
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="light-content" backgroundColor={'#2A2A2A'} />
         <ChatScreen />
       </SafeAreaView>
       <Toast />
