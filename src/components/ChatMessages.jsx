@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Toast from 'react-native-toast-message';
+import constants from '../config/constants';
 
 const ChatMessages = ({messages, onMessageLongPress}) => {
   const flatListRef = useRef(null);
@@ -32,6 +33,7 @@ const ChatMessages = ({messages, onMessageLongPress}) => {
         const [_, number, headingText] = numberedHeadingMatch;
         return (
           <Text
+            allowFontScaling={false}
             key={lineIndex}
             style={[styles.subheading, styles.marginBottom]}>
             {number} {headingText}
@@ -51,7 +53,9 @@ const ChatMessages = ({messages, onMessageLongPress}) => {
               key={lineIndex}
               style={[styles.codeBlock, styles.marginBottom]}>
               <View style={styles.codeContent}>
-                <Text style={styles.codeText}>{content}</Text>
+                <Text allowFontScaling={false} style={styles.codeText}>
+                  {content}
+                </Text>
               </View>
               <TouchableOpacity
                 style={styles.copyButton}
@@ -65,7 +69,11 @@ const ChatMessages = ({messages, onMessageLongPress}) => {
                     autoHide: true,
                   });
                 }}>
-                <Icon name={'content-copy'} size={20} color={'#666'} />
+                <Icon
+                  name="content-copy"
+                  size={20}
+                  color={constants.colors.iconInactive}
+                />
               </TouchableOpacity>
             </View>
           );
@@ -92,6 +100,7 @@ const ChatMessages = ({messages, onMessageLongPress}) => {
           if (part.startsWith('***') && part.endsWith('***')) {
             return (
               <Text
+                allowFontScaling={false}
                 key={`${lineIndex}-${partIndex}`}
                 style={[styles.heading, styles.marginBottom]}>
                 {part.slice(3, -3).trim()}
@@ -100,6 +109,7 @@ const ChatMessages = ({messages, onMessageLongPress}) => {
           } else if (part.startsWith('**') && part.endsWith('**')) {
             return (
               <Text
+                allowFontScaling={false}
                 key={`${lineIndex}-${partIndex}`}
                 style={[styles.subheading, styles.marginBottom]}>
                 {part.slice(2, -2).trim()}
@@ -107,13 +117,19 @@ const ChatMessages = ({messages, onMessageLongPress}) => {
             );
           } else if (part.startsWith('*') && part.endsWith('*')) {
             return (
-              <Text key={`${lineIndex}-${partIndex}`} style={styles.italic}>
+              <Text
+                allowFontScaling={false}
+                key={`${lineIndex}-${partIndex}`}
+                style={styles.italic}>
                 {part.slice(1, -1).trim()}
               </Text>
             );
           } else {
             return (
-              <Text key={`${lineIndex}-${partIndex}`} style={styles.bodyText}>
+              <Text
+                allowFontScaling={false}
+                key={`${lineIndex}-${partIndex}`}
+                style={styles.bodyText}>
                 {part}
               </Text>
             );
@@ -161,40 +177,41 @@ const styles = StyleSheet.create({
   messageBubble: {
     maxWidth: '80%',
     padding: 12,
-    borderRadius: 20,
+    borderRadius: 12,
     marginBottom: 10,
   },
   userMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: '#4A90E2',
+    backgroundColor: constants.colors.messageBubbleUser,
   },
   aiMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: '#2A2A2A',
+    backgroundColor: constants.colors.messageBubbleAI,
   },
   heading: {
-    fontSize: 20,
+    fontSize: constants.fontSizes.xlarge,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: constants.colors.primaryText,
   },
   subheading: {
-    fontSize: 18,
+    fontSize: constants.fontSizes.medium,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: constants.colors.primaryText,
     fontStyle: 'italic',
+    marginVertical: 10,
   },
   bodyText: {
-    fontSize: 16,
-    color: '#CCCCCC',
+    fontSize: constants.fontSizes.small,
+    color: constants.colors.secondaryText,
     lineHeight: 24,
   },
   italic: {
     fontStyle: 'italic',
-    fontSize: 16,
-    color: 'red',
+    fontSize: constants.fontSizes.small,
+    color: constants.colors.primary,
   },
   codeBlock: {
-    backgroundColor: '#1E1E1E',
+    backgroundColor: constants.colors.codeBlockBackground,
     borderRadius: 4,
     flexDirection: 'row',
     alignItems: 'center',
@@ -204,13 +221,14 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   codeText: {
-    fontFamily: 'monospace',
-    fontSize: 14,
-    color: '#E6E6E6',
+    fontFamily: constants.fontFamilies.monospace,
+    fontSize: constants.fontSizes.small - 3,
+    color: constants.colors.primaryText,
   },
   copyButton: {
     padding: 8,
     marginRight: 4,
+    alignSelf: 'flex-end',
   },
   marginBottom: {
     marginBottom: 10,

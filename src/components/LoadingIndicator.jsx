@@ -1,6 +1,6 @@
-// components/LoadingIndicator.js
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
+import constants from '../config/constants';
 
 const LoadingIndicator = () => {
   const [dots, setDots] = useState('');
@@ -18,7 +18,9 @@ const LoadingIndicator = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>AI is thinking{dots}</Text>
+      <Text style={styles.text} allowFontScaling={false}>
+        AI is thinking{dots}
+      </Text>
     </View>
   );
 };
@@ -29,8 +31,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    color: '#FFFFFF',
-    fontSize: 16,
+    color: constants.colors.loadingText,
+    fontSize: constants.fontSizes.small,
   },
 });
 

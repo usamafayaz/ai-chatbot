@@ -1,4 +1,3 @@
-// components/ChatScreen.js
 import React, {useState} from 'react';
 import {View, StyleSheet, Clipboard} from 'react-native';
 import {GoogleGenerativeAI} from '@google/generative-ai';
@@ -8,6 +7,7 @@ import ChatInput from '../components/ChatInput';
 import LoadingIndicator from '../components/LoadingIndicator';
 import Toast from 'react-native-toast-message';
 import apiKey from '../config/apiKey';
+import constants from '../config/constants';
 
 // Initialize the API
 const genAI = new GoogleGenerativeAI(apiKey.API_KEY);
@@ -32,8 +32,6 @@ const ChatScreen = () => {
         text: response.text(),
         user: false,
       };
-      console.log(`Prompt: ${text}`);
-      console.log(`AI Response: ${aiResponse.text}`);
 
       setMessages(prevMessages => [...prevMessages, aiResponse]);
     } catch (error) {
@@ -76,7 +74,7 @@ const ChatScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1A1A1A',
+    backgroundColor: constants.colors.primaryBackground,
   },
 });
 

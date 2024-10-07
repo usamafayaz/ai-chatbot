@@ -1,23 +1,31 @@
-// components/ChatHeader.js
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import constants from '../config/constants';
 
 const ChatHeader = () => {
-  const [theme, setTheme] = useState('dark-mode');
+  const [currentTheme, setCurrentTheme] = useState('dark-mode');
+
   return (
     <View style={styles.header}>
       <TouchableOpacity style={styles.iconLeft}>
-        <Icon name="menu" size={30} color={'#666'} />
+        <Icon name="menu" size={30} color={constants.colors.iconInactive} />
       </TouchableOpacity>
-      <Text style={styles.headerText}>AI Chat Bot</Text>
+      <Text allowFontScaling={false} style={styles.headerText}>
+        AI Chat Bot
+      </Text>
       <TouchableOpacity
         style={styles.iconRight}
         onPress={() => {
-          if (theme == 'dark-mode') setTheme('light-mode');
-          else setTheme('dark-mode');
+          setCurrentTheme(
+            currentTheme === 'dark-mode' ? 'light-mode' : 'dark-mode',
+          );
         }}>
-        <Icon name={theme} size={30} color={'#666'} />
+        <Icon
+          name={currentTheme}
+          size={30}
+          color={constants.colors.iconInactive}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -26,26 +34,26 @@ const ChatHeader = () => {
 const styles = StyleSheet.create({
   header: {
     height: 60,
-    backgroundColor: '#2A2A2A',
-    justifyContent: 'center', // Center content horizontally
+    backgroundColor: constants.colors.headerBackground,
+    justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    paddingHorizontal: 15, // Add some horizontal padding
+    paddingHorizontal: 15,
   },
   headerText: {
-    color: '#FFFFFF',
-    fontSize: 18,
+    color: constants.colors.primaryText,
+    fontSize: constants.fontSizes.medium,
     fontWeight: 'bold',
-    fontFamily: 'monospace',
+    fontFamily: constants.fontFamilies.monospace,
     fontStyle: 'italic',
   },
   iconLeft: {
-    position: 'absolute', // Absolute positioning for the left icon
-    left: 15, // Move to the left corner
+    position: 'absolute',
+    left: 15,
   },
   iconRight: {
-    position: 'absolute', // Absolute positioning for the right icon
-    right: 15, // Move to the right corner
+    position: 'absolute',
+    right: 15,
   },
 });
 
