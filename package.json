@@ -13,13 +13,16 @@
     "@google/generative-ai": "^0.20.0",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
+    "@reduxjs/toolkit": "^2.2.8",
+    "lottie-react-native": "^7.0.0",
     "react": "18.3.1",
     "react-native": "0.75.3",
     "react-native-gesture-handler": "^2.20.0",
     "react-native-safe-area-context": "^4.11.0",
     "react-native-screens": "^3.34.0",
     "react-native-toast-message": "^2.2.1",
-    "react-native-vector-icons": "^10.2.0"
+    "react-native-vector-icons": "^10.2.0",
+    "react-redux": "^9.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import constants from '../config/constants';
+import LottieView from 'lottie-react-native';
 
 const LoadingIndicator = () => {
   const [dots, setDots] = useState('');
@@ -18,9 +19,7 @@ const LoadingIndicator = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text} allowFontScaling={false}>
-        AI is thinking{dots}
-      </Text>
+      <Text style={styles.text} allowFontScaling={false}></Text>
     </View>
   );
 };

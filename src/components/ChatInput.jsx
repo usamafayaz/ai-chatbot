@@ -2,10 +2,13 @@
 import React, {useState} from 'react';
 import {View, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import constants from '../config/constants';
+import {constants, getThemeColors} from '../config/constants';
+import {useSelector} from 'react-redux';
 
 const ChatInput = ({onSend, disabled}) => {
   const [input, setInput] = useState('');
+  const currentTheme = useSelector(state => state.theme.theme);
+  const colors = getThemeColors(currentTheme);
 
   const handleSend = () => {
     if (input.trim() !== '') {
@@ -15,13 +18,20 @@ const ChatInput = ({onSend, disabled}) => {
   };
 
   return (
-    <View style={styles.inputContainer}>
+    <View
+      style={[
+        styles.inputContainer,
+        {backgroundColor: colors.secondaryBackground},
+      ]}>
       <TextInput
-        style={styles.input}
+        style={[
+          styles.input,
+          {backgroundColor: colors.inputBackground, color: colors.primaryText},
+        ]}
         value={input}
         onChangeText={setInput}
         placeholder="Type a message..."
-        placeholderTextColor={constants.colors.placeholderText}
+        placeholderTextColor={colors.placeholderText}
         editable={!disabled}
       />
       <TouchableOpacity
@@ -31,9 +41,7 @@ const ChatInput = ({onSend, disabled}) => {
         <Icon
           name="send"
           size={24}
-          color={
-            disabled ? constants.colors.iconInactive : constants.colors.primary
-          }
+          color={disabled ? colors.iconInactive : colors.primary}
         />
       </TouchableOpacity>
     </View>
@@ -46,15 +54,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     marginTop: 5,
-    backgroundColor: constants.colors.secondaryBackground,
   },
   input: {
     flex: 1,
-    backgroundColor: constants.colors.inputBackground,
     borderRadius: 20,
     paddingHorizontal: 15,
     paddingVertical: 10,
-    color: constants.colors.primaryText,
     fontSize: constants.fontSizes.small,
   },
   sendButton: {

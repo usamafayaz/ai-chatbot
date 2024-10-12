@@ -9,16 +9,20 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Toast from 'react-native-toast-message';
-import constants from '../config/constants';
+import {constants, getThemeColors} from '../config/constants';
+import LottieView from 'lottie-react-native';
+import {useSelector} from 'react-redux';
 
-const ChatMessages = ({messages, onMessageLongPress}) => {
+const ChatMessages = ({messages, onMessageLongPress, isLoading}) => {
   const flatListRef = useRef(null);
+  const currentTheme = useSelector(state => state.theme.theme);
+  const colors = getThemeColors(currentTheme);
 
   useEffect(() => {
     if (flatListRef.current && messages.length > 0) {
       flatListRef.current.scrollToEnd({animated: true});
     }
-  }, [messages]);
+  }, [messages, isLoading]);
 
   const renderFormattedText = text => {
     const lines = text.split('\n');
@@ -26,7 +30,6 @@ const ChatMessages = ({messages, onMessageLongPress}) => {
     let codeContent = '';
 
     return lines.map((line, lineIndex) => {
-      // Check if the line is a numbered heading
       const numberedHeadingMatch = line.match(/^(\d+\.) \*\*(.*?)\*\*/);
 
       if (numberedHeadingMatch) {
@@ -35,25 +38,33 @@ const ChatMessages = ({messages, onMessageLongPress}) => {
           <Text
             allowFontScaling={false}
             key={lineIndex}
-            style={[styles.subheading, styles.marginBottom]}>
+            style={[
+              styles.subheading,
+              styles.marginBottom,
+              {color: colors.primaryText},
+            ]}>
             {number} {headingText}
           </Text>
         );
       }
 
-      // Handle code blocks
       if (line.trim() === '```') {
         if (inCodeBlock) {
-          // End of code block
           const content = codeContent;
           codeContent = '';
           inCodeBlock = false;
           return (
             <View
               key={lineIndex}
-              style={[styles.codeBlock, styles.marginBottom]}>
+              style={[
+                styles.codeBlock,
+                styles.marginBottom,
+                {backgroundColor: colors.codeBlockBackground},
+              ]}>
               <View style={styles.codeContent}>
-                <Text allowFontScaling={false} style={styles.codeText}>
+                <Text
+                  allowFontScaling={false}
+                  style={[styles.codeText, {color: colors.primaryText}]}>
                   {content}
                 </Text>
               </View>
@@ -72,13 +83,12 @@ const ChatMessages = ({messages, onMessageLongPress}) => {
                 <Icon
                   name="content-copy"
                   size={20}
-                  color={constants.colors.iconInactive}
+                  color={colors.iconInactive}
                 />
               </TouchableOpacity>
             </View>
           );
         } else {
-          // Start of code block
           inCodeBlock = true;
           return null;
         }
@@ -89,7 +99,6 @@ const ChatMessages = ({messages, onMessageLongPress}) => {
         return null;
       }
 
-      // Process other lines as before
       const parts = line.split(/(\*\*\*.*?\*\*\*|\*\*.*?\*\*|\*.*?\*)/);
 
       return parts
@@ -102,7 +111,11 @@ const ChatMessages = ({messages, onMessageLongPress}) => {
               <Text
                 allowFontScaling={false}
                 key={`${lineIndex}-${partIndex}`}
-                style={[styles.heading, styles.marginBottom]}>
+                style={[
+                  styles.heading,
+                  styles.marginBottom,
+                  {color: colors.primaryText},
+                ]}>
                 {part.slice(3, -3).trim()}
               </Text>
             );
@@ -111,7 +124,11 @@ const ChatMessages = ({messages, onMessageLongPress}) => {
               <Text
                 allowFontScaling={false}
                 key={`${lineIndex}-${partIndex}`}
-                style={[styles.subheading, styles.marginBottom]}>
+                style={[
+                  styles.subheading,
+                  styles.marginBottom,
+                  {color: colors.primaryText},
+                ]}>
                 {part.slice(2, -2).trim()}
               </Text>
             );
@@ -120,7 +137,7 @@ const ChatMessages = ({messages, onMessageLongPress}) => {
               <Text
                 allowFontScaling={false}
                 key={`${lineIndex}-${partIndex}`}
-                style={styles.italic}>
+                style={[styles.italic, {color: colors.primary}]}>
                 {part.slice(1, -1).trim()}
               </Text>
             );
@@ -129,7 +146,7 @@ const ChatMessages = ({messages, onMessageLongPress}) => {
               <Text
                 allowFontScaling={false}
                 key={`${lineIndex}-${partIndex}`}
-                style={styles.bodyText}>
+                style={[styles.bodyText, {color: colors.secondaryText}]}>
                 {part}
               </Text>
             );
@@ -138,25 +155,55 @@ const ChatMessages = ({messages, onMessageLongPress}) => {
     });
   };
 
-  const renderItem = ({item: message}) => (
-    <TouchableOpacity
-      activeOpacity={0.8}
-      onLongPress={() => onMessageLongPress(message.text)}
-      delayLongPress={500}>
-      <View
-        style={[
-          styles.messageBubble,
-          message.user ? styles.userMessage : styles.aiMessage,
-        ]}>
-        {renderFormattedText(message.text)}
-      </View>
-    </TouchableOpacity>
-  );
+  const renderItem = ({item: message}) => {
+    if (message.isLoading) {
+      return (
+        <View
+          style={[
+            styles.messageBubble,
+            styles.aiMessage,
+            {backgroundColor: colors.messageBubbleAI},
+          ]}>
+          <LottieView
+            source={require('../assets/animations/loading.json')}
+            autoPlay
+            loop
+            style={styles.loadingLottie}
+          />
+        </View>
+      );
+    }
+
+    return (
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onLongPress={() => onMessageLongPress(message.text)}
+        delayLongPress={500}>
+        <View
+          style={[
+            styles.messageBubble,
+            message.user
+              ? [
+                  styles.userMessage,
+                  {backgroundColor: colors.messageBubbleUser},
+                ]
+              : [styles.aiMessage, {backgroundColor: colors.messageBubbleAI}],
+          ]}>
+          {renderFormattedText(message.text)}
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const messagesWithLoading = [
+    ...messages,
+    ...(isLoading ? [{id: 'loading', isLoading: true}] : []),
+  ];
 
   return (
     <FlatList
       ref={flatListRef}
-      data={messages}
+      data={messagesWithLoading}
       renderItem={renderItem}
       keyExtractor={item => item.id.toString()}
       style={styles.messagesContainer}
@@ -176,42 +223,36 @@ const styles = StyleSheet.create({
   },
   messageBubble: {
     maxWidth: '80%',
-    padding: 12,
-    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: 10,
     marginBottom: 10,
   },
   userMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: constants.colors.messageBubbleUser,
   },
   aiMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: constants.colors.messageBubbleAI,
   },
   heading: {
     fontSize: constants.fontSizes.xlarge,
     fontWeight: 'bold',
-    color: constants.colors.primaryText,
   },
   subheading: {
     fontSize: constants.fontSizes.medium,
     fontWeight: 'bold',
-    color: constants.colors.primaryText,
     fontStyle: 'italic',
     marginVertical: 10,
   },
   bodyText: {
     fontSize: constants.fontSizes.small,
-    color: constants.colors.secondaryText,
     lineHeight: 24,
   },
   italic: {
     fontStyle: 'italic',
     fontSize: constants.fontSizes.small,
-    color: constants.colors.primary,
   },
   codeBlock: {
-    backgroundColor: constants.colors.codeBlockBackground,
     borderRadius: 4,
     flexDirection: 'row',
     alignItems: 'center',
@@ -223,7 +264,6 @@ const styles = StyleSheet.create({
   codeText: {
     fontFamily: constants.fontFamilies.monospace,
     fontSize: constants.fontSizes.small - 3,
-    color: constants.colors.primaryText,
   },
   copyButton: {
     padding: 8,
@@ -233,6 +273,7 @@ const styles = StyleSheet.create({
   marginBottom: {
     marginBottom: 10,
   },
+  loadingLottie: {height: 40, width: 40},
 });
 
 export default ChatMessages;

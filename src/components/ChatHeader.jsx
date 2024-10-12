@@ -1,30 +1,33 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import constants from '../config/constants';
+import {toggleTheme} from '../redux/themeSlice';
+import {getThemeColors, constants} from '../config/constants';
 
 const ChatHeader = () => {
-  const [currentTheme, setCurrentTheme] = useState('dark-mode');
+  const dispatch = useDispatch();
+  const currentTheme = useSelector(state => state.theme.theme);
+  const colors = getThemeColors(currentTheme);
 
   return (
-    <View style={styles.header}>
+    <View
+      style={[styles.header, {backgroundColor: colors.secondaryBackground}]}>
       <TouchableOpacity style={styles.iconLeft}>
-        <Icon name="menu" size={30} color={constants.colors.iconInactive} />
+        <Icon name="menu" size={30} color={colors.iconInactive} />
       </TouchableOpacity>
-      <Text allowFontScaling={false} style={styles.headerText}>
+      <Text
+        allowFontScaling={false}
+        style={[styles.headerText, {color: colors.primaryText}]}>
         AI Chat Bot
       </Text>
       <TouchableOpacity
         style={styles.iconRight}
-        onPress={() => {
-          setCurrentTheme(
-            currentTheme === 'dark-mode' ? 'light-mode' : 'dark-mode',
-          );
-        }}>
+        onPress={() => dispatch(toggleTheme())}>
         <Icon
-          name={currentTheme}
+          name={currentTheme === 'dark' ? 'dark-mode' : 'light-mode'}
           size={30}
-          color={constants.colors.iconInactive}
+          color={colors.iconInactive}
         />
       </TouchableOpacity>
     </View>
@@ -34,17 +37,15 @@ const ChatHeader = () => {
 const styles = StyleSheet.create({
   header: {
     height: 60,
-    backgroundColor: constants.colors.headerBackground,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
     paddingHorizontal: 15,
   },
   headerText: {
-    color: constants.colors.primaryText,
-    fontSize: constants.fontSizes.medium,
+    fontSize: constants.fontSizes.large,
     fontWeight: 'bold',
-    fontFamily: constants.fontFamilies.monospace,
+    fontFamily: constants.fontFamilies.bold,
     fontStyle: 'italic',
   },
   iconLeft: {
