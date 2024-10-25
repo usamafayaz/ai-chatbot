@@ -162,7 +162,7 @@ const ChatMessages = ({messages, onMessageLongPress, isLoading}) => {
           style={[
             styles.messageBubble,
             styles.aiMessage,
-            {backgroundColor: colors.messageBubbleAI},
+            {backgroundColor: colors.messageBubbleAI, paddingVertical: 0},
           ]}>
           <LottieView
             source={require('../assets/animations/loading.json')}
@@ -202,6 +202,7 @@ const ChatMessages = ({messages, onMessageLongPress, isLoading}) => {
 
   return (
     <FlatList
+      windowSize={20}
       ref={flatListRef}
       data={messagesWithLoading}
       renderItem={renderItem}
@@ -276,4 +277,4 @@ const styles = StyleSheet.create({
   loadingLottie: {height: 40, width: 40},
 });
 
-export default ChatMessages;
+export default React.memo(ChatMessages);
