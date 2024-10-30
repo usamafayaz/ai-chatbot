@@ -27,7 +27,7 @@ AI ChatBot enables users to send messages and receive conversational responses f
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/usamafayaz/AiChatBot.git
+   git clone https://github.com/usamafayaz/ai-chatbot.git
    ```
 
 2. Navigate to the project directory:
