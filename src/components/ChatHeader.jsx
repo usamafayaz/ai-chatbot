@@ -1,27 +1,44 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {toggleTheme} from '../redux/themeSlice';
 import {getThemeColors, constants} from '../config/constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
 
-const ChatHeader = ({profileImage, nickname}) => {
+const ChatHeader = () => {
   const dispatch = useDispatch();
   const currentTheme = useSelector(state => state.theme.theme);
   const colors = getThemeColors(currentTheme);
-
-  // Use useEffect to log only when profileImage changes
+  const [profileImage, setProfileImage] = useState(null);
+  const navigation = useNavigation();
   useEffect(() => {
-    console.log(profileImage);
-  }, [profileImage]); // Only log when profileImage changes
+    const fetchData = async () => {
+      const storedProfileImage = await AsyncStorage.getItem('profile_pic');
+      console.log(storedProfileImage);
+
+      setProfileImage(storedProfileImage);
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <View
       style={[styles.header, {backgroundColor: colors.secondaryBackground}]}>
       {/* Profile Image on the left */}
-      <View style={styles.iconLeftContainer}>
-        <Image source={{uri: profileImage}} style={styles.iconLeft} />
-      </View>
+      <TouchableOpacity
+        style={styles.iconLeftContainer}
+        onPress={() => {
+          navigation.navigate('Setup');
+        }}>
+        {profileImage ? (
+          <Image source={{uri: `${profileImage}`}} style={styles.iconLeft} />
+        ) : (
+          <Icon name="account-circle" size={40} color={colors.iconInactive} />
+        )}
+      </TouchableOpacity>
 
       {/* Title in the center */}
       <Text

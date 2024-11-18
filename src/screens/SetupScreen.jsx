@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -6,13 +6,16 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
+  StatusBar,
 } from 'react-native';
-import * as ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import {useSelector} from 'react-redux';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {getThemeColors} from '../config/constants';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {CommonActions} from '@react-navigation/native';
 
 const SetupScreen = ({navigation}) => {
   const [nickname, setNickname] = useState('');
@@ -20,30 +23,39 @@ const SetupScreen = ({navigation}) => {
   const currentTheme = useSelector(state => state.theme.theme);
   const colors = getThemeColors(currentTheme);
 
-  const handleImagePick = async () => {
-    const options = {
-      mediaType: 'photo',
-      includeBase64: false,
+  useEffect(() => {
+    const getNickname = async () => {
+      const profile_pic = await AsyncStorage.getItem('profile_pic');
+      const nickname = await AsyncStorage.getItem('nickname');
+      setNickname(nickname || '');
+      setProfileImage(profile_pic || '');
     };
-
+    getNickname();
+  }, []);
+  const handleImagePick = async () => {
     try {
-      const result = await ImagePicker.launchImageLibrary(options);
-      if (result.assets && result.assets[0]) {
-        setProfileImage(result.assets[0].uri);
+      const result = await ImagePicker.openPicker({
+        mediaType: 'photo',
+        includeBase64: true,
+        cropping: true,
+        cropperCircleOverlay: true,
+      });
+
+      if (result && result.data) {
+        setProfileImage(result.path);
       }
     } catch (error) {
-      console.error('Error picking image:', error);
       Toast.show({
         type: 'error',
         position: 'bottom',
-        text1: 'Error, Failed to select image',
+        text1: 'Failed to select image',
         visibilityTime: 2000,
         autoHide: true,
       });
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (nickname.trim() === '') {
       Toast.show({
         type: 'error',
@@ -54,28 +66,31 @@ const SetupScreen = ({navigation}) => {
       });
       return;
     }
-
-    navigation.navigate('ChatScreen', {nickname, profileImage});
+    if (profileImage) {
+      await AsyncStorage.setItem('profile_pic', profileImage);
+    }
+    await AsyncStorage.setItem('nickname', nickname);
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: 'ChatScreen'}],
+      }),
+    );
   };
 
   return (
     <View
       style={[styles.container, {backgroundColor: colors.primaryBackground}]}>
+      <StatusBar
+        backgroundColor={colors.primaryBackground}
+        barStyle={'light-content'}
+      />
       <View style={styles.headerContainer}>
-        <MaterialCommunityIcons
-          name="robot-angry"
-          size={50}
-          color={colors.primary}
-        />
+        <Icon name="robot" size={50} color={colors.primary} />
         <Text style={[styles.appName, {color: colors.primaryText}]}>
           AIChatBot
         </Text>
       </View>
-
-      <Text style={[styles.description, {color: colors.secondaryText}]}>
-        Your intelligent AI companion powered by advanced language models. Chat,
-        learn, and explore with personalized AI interactions.
-      </Text>
 
       <TouchableOpacity onPress={handleImagePick} style={styles.imageContainer}>
         {profileImage ? (
@@ -118,10 +133,13 @@ const SetupScreen = ({navigation}) => {
       <TouchableOpacity
         style={[styles.button, {backgroundColor: colors.primary}]}
         onPress={handleSubmit}>
-        <Text style={[styles.buttonText, {color: colors.primaryText}]}>
-          Get Started
-        </Text>
+        <Text style={styles.buttonText}>Start Chatting</Text>
       </TouchableOpacity>
+
+      <View style={[styles.decorativeCircle, styles.bottomLeftCircle]} />
+      <View style={[styles.decorativeCircle, styles.bottomLeftCircleInner]} />
+      <View style={[styles.decorativeCircle, styles.topRightCircle]} />
+      <View style={[styles.decorativeCircle, styles.topRightCircleInner]} />
     </View>
   );
 };
@@ -129,14 +147,13 @@ const SetupScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: '60%',
   },
   appName: {
     fontSize: 28,
@@ -183,6 +200,37 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  decorativeCircle: {
+    position: 'absolute',
+    width: 128,
+    height: 128,
+    borderWidth: 4,
+    borderColor: 'rgba(22, 163, 255, 0.1)',
+    borderRadius: 64,
+  },
+  bottomLeftCircle: {
+    bottom: -64,
+    left: -64,
+  },
+  bottomLeftCircleInner: {
+    bottom: -56,
+    left: -56,
+    width: 112,
+    height: 112,
+    borderRadius: 56,
+  },
+  topRightCircle: {
+    top: -64,
+    right: -64,
+  },
+  topRightCircleInner: {
+    top: -56,
+    right: -56,
+    width: 112,
+    height: 112,
+    borderRadius: 56,
   },
 });
 

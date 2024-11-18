@@ -139,7 +139,7 @@ const ChatMessages = ({messages, onMessageLongPress, isLoading}) => {
               <Text
                 allowFontScaling={false}
                 key={`${lineIndex}-${partIndex}`}
-                style={[styles.italic, {color: colors.primary}]}>
+                style={[styles.italic, {color: colors.primaryText}]}>
                 {part.slice(1, -1).trim()}
               </Text>
             );

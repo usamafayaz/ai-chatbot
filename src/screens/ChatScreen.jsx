@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
   Platform,
   Clipboard,
   Text,
+  StatusBar,
 } from 'react-native';
 import {GoogleGenerativeAI} from '@google/generative-ai';
 import ChatMessages from '../components/ChatMessages';
@@ -18,19 +19,40 @@ import apiKey from '../config/apiKey';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {constants, getThemeColors} from '../config/constants';
 import {useSelector} from 'react-redux';
-import * as ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import RNFS from 'react-native-fs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const genAI = new GoogleGenerativeAI(apiKey.API_KEY);
 
-const ChatScreen = ({route}) => {
-  const {nickname, profileImage} = route.params;
+const ChatScreen = () => {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [inputText, setInputText] = useState('');
   const currentTheme = useSelector(state => state.theme.theme);
   const colors = getThemeColors(currentTheme);
+  const [nickname, setNickname] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const storedNickname = await AsyncStorage.getItem('nickname');
+      setNickname(storedNickname || 'User');
+    };
+    fetchData();
+  }, []);
+
+  const getTimeBasedGreeting = () => {
+    const currentHour = new Date().getHours();
+
+    if (currentHour >= 5 && currentHour < 12) {
+      return 'Good Morning';
+    } else if (currentHour >= 12 && currentHour < 17) {
+      return 'Good Afternoon';
+    } else {
+      return 'Good Evening';
+    }
+  };
 
   const fileToGenerativePart = async uri => {
     try {
@@ -49,27 +71,24 @@ const ChatScreen = ({route}) => {
         },
       };
     } catch (error) {
-      console.error('Error converting image:', error);
+      console.log(error);
       throw error;
     }
   };
 
   const handleImagePick = async () => {
-    const options = {
-      mediaType: 'photo',
-      includeBase64: false,
-      maxHeight: 1024,
-      maxWidth: 1024,
-      quality: 0.7,
-    };
-
     try {
-      const result = await ImagePicker.launchImageLibrary(options);
-      if (result.assets && result.assets[0]) {
-        setSelectedImage(result.assets[0].uri);
+      const result = await ImagePicker.openPicker({
+        width: 1024,
+        height: 1024,
+        cropping: false,
+        includeBase64: false,
+      });
+
+      if (result && result.path) {
+        setSelectedImage(result.path);
       }
     } catch (error) {
-      console.error('Error picking image:', error);
       Alert.alert('Error', 'Failed to select image');
     }
   };
@@ -123,7 +142,6 @@ const ChatScreen = ({route}) => {
 
       setMessages(prevMessages => [...prevMessages, aiResponse]);
     } catch (error) {
-      console.error('Error with Gemini:', error);
       Alert.alert('Error', 'Failed to get response from AI');
 
       const errorResponse = {
@@ -151,25 +169,37 @@ const ChatScreen = ({route}) => {
   return (
     <View
       style={[styles.container, {backgroundColor: colors.primaryBackground}]}>
-      <ChatHeader profileImage={profileImage} nickname={nickname} />
+      <StatusBar
+        backgroundColor={colors.secondaryBackground}
+        barStyle={'light-content'}
+      />
+      <ChatHeader />
       {messages.length === 0 && (
         <View
           style={[
             styles.welcomeContainer,
             {backgroundColor: colors.secondaryBackground},
           ]}>
-          <Icon name="robot" size={60} color={colors.primary} />
-          <Text style={[styles.welcomeTitle, {color: colors.primaryText}]}>
-            Welcome to Gemini Chat
-          </Text>
-          <Text style={[styles.welcomeText, {color: colors.secondaryText}]}>
-            How can I assist you today? Feel free to ask me anything!
-          </Text>
+          <View style={styles.rowStyle}>
+            <Image
+              source={require('../assets/images/particle.png')}
+              tintColor={colors.primary}
+              style={styles.iconStyle}
+            />
+            <View>
+              <Text style={[styles.welcomeTitle, {color: colors.primaryText}]}>
+                {getTimeBasedGreeting()}, {nickname}
+              </Text>
+              <Text style={[styles.welcomeText, {color: colors.secondaryText}]}>
+                How may I assist you today?
+              </Text>
+            </View>
+          </View>
         </View>
       )}
       {messages.length !== 0 && (
         <View style={styles.centeredIcon}>
-          <Icon name="robot" size={60} color={colors.primary} />
+          <Icon name="robot" size={60} color={colors.iconInactive} />
         </View>
       )}
 
@@ -226,6 +256,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
+  rowStyle: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconStyle: {
+    width: 40,
+    height: 40,
+    marginRight: 12,
   },
   welcomeTitle: {
     fontSize: constants.fontSizes.xlarge,
