@@ -16,8 +16,6 @@ const ChatHeader = () => {
   useEffect(() => {
     const fetchData = async () => {
       const storedProfileImage = await AsyncStorage.getItem('profile_pic');
-      console.log(storedProfileImage);
-
       setProfileImage(storedProfileImage);
     };
 

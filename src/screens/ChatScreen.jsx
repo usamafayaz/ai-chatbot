@@ -89,7 +89,13 @@ const ChatScreen = () => {
         setSelectedImage(result.path);
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to select image');
+      Toast.show({
+        type: 'success',
+        position: 'bottom',
+        text1: 'Failed to select image',
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     }
   };
 

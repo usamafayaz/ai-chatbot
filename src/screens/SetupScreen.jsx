@@ -58,7 +58,7 @@ const SetupScreen = ({navigation}) => {
   const handleSubmit = async () => {
     if (nickname.trim() === '') {
       Toast.show({
-        type: 'error',
+        type: 'success',
         position: 'bottom',
         text1: 'Please enter a nickname',
         visibilityTime: 2000,
