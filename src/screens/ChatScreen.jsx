@@ -33,15 +33,31 @@ const ChatScreen = () => {
   const currentTheme = useSelector(state => state.theme.theme);
   const colors = getThemeColors(currentTheme);
   const [nickname, setNickname] = useState('');
+  const [chatSession, setChatSession] = useState(null);
 
+  // Initialize chat session when component mounts
   useEffect(() => {
+    const initializeChatSession = async () => {
+      const model = genAI.getGenerativeModel({model: 'gemini-pro'});
+      const chat = model.startChat({
+        history: [],
+        generationConfig: {
+          maxOutputTokens: 2000,
+        },
+      });
+      setChatSession(chat);
+    };
+
     const fetchData = async () => {
       const storedNickname = await AsyncStorage.getItem('nickname');
       setNickname(storedNickname || 'User');
     };
+
+    initializeChatSession();
     fetchData();
   }, []);
 
+  // Rest of the time-based greeting function remains the same
   const getTimeBasedGreeting = () => {
     const currentHour = new Date().getHours();
 
@@ -54,6 +70,7 @@ const ChatScreen = () => {
     }
   };
 
+  // File to generative part function remains the same
   const fileToGenerativePart = async uri => {
     try {
       let base64Data;
@@ -76,6 +93,7 @@ const ChatScreen = () => {
     }
   };
 
+  // Image pick handler remains the same
   const handleImagePick = async () => {
     try {
       const result = await ImagePicker.openPicker({
@@ -99,13 +117,24 @@ const ChatScreen = () => {
     }
   };
 
+  // Modified send handler to use chatSession
   const handleSend = async () => {
+    if (!chatSession) return;
     if (!selectedImage && !inputText.trim()) return;
 
     if (inputText.trim() === 'cls') {
       setMessages([]);
       setSelectedImage(null);
       setInputText('');
+      // Reinitialize chat session
+      const model = genAI.getGenerativeModel({model: 'gemini-pro'});
+      const newChatSession = model.startChat({
+        history: [],
+        generationConfig: {
+          maxOutputTokens: 2000,
+        },
+      });
+      setChatSession(newChatSession);
       return;
     }
 
@@ -121,11 +150,11 @@ const ChatScreen = () => {
     setIsLoading(true);
 
     try {
-      let model;
       let result;
 
       if (selectedImage) {
-        model = genAI.getGenerativeModel({model: 'gemini-1.5-flash'});
+        // Switch to multimodal model for image
+        const model = genAI.getGenerativeModel({model: 'gemini-1.5-flash'});
         const imagePart = await fileToGenerativePart(selectedImage);
         setSelectedImage(null);
         const prompt =
@@ -135,8 +164,8 @@ const ChatScreen = () => {
 
         result = await model.generateContent([prompt, imagePart]);
       } else {
-        model = genAI.getGenerativeModel({model: 'gemini-pro'});
-        result = await model.generateContent(inputText);
+        // Use chat session for text conversations
+        result = await chatSession.sendMessage(inputText);
       }
 
       const response = await result.response;
@@ -148,6 +177,7 @@ const ChatScreen = () => {
 
       setMessages(prevMessages => [...prevMessages, aiResponse]);
     } catch (error) {
+      console.error('Error in chat:', error);
       Alert.alert('Error', 'Failed to get response from AI');
 
       const errorResponse = {
@@ -161,6 +191,7 @@ const ChatScreen = () => {
     }
   };
 
+  // Message long press handler remains the same
   const handleMessageLongPress = text => {
     Clipboard.setString(text);
     Toast.show({
@@ -172,6 +203,7 @@ const ChatScreen = () => {
     });
   };
 
+  // Render method remains the same as in the original code
   return (
     <View
       style={[styles.container, {backgroundColor: colors.primaryBackground}]}>
