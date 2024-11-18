@@ -33,7 +33,7 @@ AI ChatBot enables users to send messages and receive conversational responses f
 2. Navigate to the project directory:
 
    ```bash
-   cd Transparify
+   cd ai-chatbot
    ```
 
 3. Install React Native packages and dependencies:
