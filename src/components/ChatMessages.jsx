@@ -1,3 +1,4 @@
+// ChatMessages.js
 import React, {useRef, useEffect} from 'react';
 import {
   FlatList,
@@ -6,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Clipboard,
+  Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Toast from 'react-native-toast-message';
@@ -185,11 +187,22 @@ const ChatMessages = ({messages, onMessageLongPress, isLoading}) => {
             message.user
               ? [
                   styles.userMessage,
-                  {backgroundColor: colors.messageBubbleUser},
+                  {
+                    backgroundColor: !message.image
+                      ? colors.messageBubbleUser
+                      : 'transparent',
+                  },
                 ]
               : [styles.aiMessage, {backgroundColor: colors.messageBubbleAI}],
           ]}>
-          {renderFormattedText(message.text)}
+          {message.image && (
+            <Image
+              source={{uri: message.image}}
+              style={styles.messageImage}
+              resizeMode="cover"
+            />
+          )}
+          {message.text && renderFormattedText(message.text)}
         </View>
       </TouchableOpacity>
     );
@@ -274,7 +287,16 @@ const styles = StyleSheet.create({
   marginBottom: {
     marginBottom: 10,
   },
-  loadingLottie: {height: 40, width: 40},
+  loadingLottie: {
+    height: 40,
+    width: 40,
+  },
+  messageImage: {
+    width: 200,
+    height: 200,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
 });
 
 export default React.memo(ChatMessages);

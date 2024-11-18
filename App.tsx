@@ -5,6 +5,11 @@ import Toast from 'react-native-toast-message';
 import {Provider, useSelector} from 'react-redux';
 import store from './src/redux/store';
 import {getThemeColors} from './src/config/constants';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import SetupScreen from './src/screens/SetupScreen';
+
+const Stack = createStackNavigator();
 
 // Create a new component that will be wrapped by the Provider
 const ThemedApp = () => {
@@ -18,7 +23,12 @@ const ThemedApp = () => {
         barStyle={currentTheme === 'dark' ? 'light-content' : 'dark-content'}
         backgroundColor={colors.secondaryBackground}
       />
-      <ChatScreen />
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{headerShown: false}}>
+          <Stack.Screen name="Setup" component={SetupScreen} />
+          <Stack.Screen name="ChatScreen" component={ChatScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </SafeAreaView>
   );
 };

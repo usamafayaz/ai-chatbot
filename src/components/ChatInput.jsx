@@ -1,42 +1,48 @@
-// components/ChatInput.js
-import React, {useState} from 'react';
-import {View, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+// ChatInput.js
+import React from 'react';
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {constants, getThemeColors} from '../config/constants';
 import {useSelector} from 'react-redux';
 
-const ChatInput = ({onSend, disabled}) => {
-  const [input, setInput] = useState('');
+const ChatInput = ({value, onChangeText, onSend, onImagePick, disabled}) => {
   const currentTheme = useSelector(state => state.theme.theme);
   const colors = getThemeColors(currentTheme);
-
-  const handleSend = () => {
-    if (input.trim() !== '') {
-      onSend(input);
-      setInput('');
-    }
-  };
 
   return (
     <View
       style={[
         styles.inputContainer,
-        {backgroundColor: colors.secondaryBackground},
+        {backgroundColor: colors.inputBackground},
       ]}>
+      <TouchableOpacity
+        onPress={onImagePick}
+        style={styles.iconButton}
+        disabled={disabled}>
+        <Icon
+          name="image-outline"
+          size={24}
+          color={disabled ? colors.iconInactive : colors.primary}
+        />
+      </TouchableOpacity>
       <TextInput
-        style={[
-          styles.input,
-          {backgroundColor: colors.inputBackground, color: colors.primaryText},
-        ]}
-        value={input}
-        onChangeText={setInput}
+        style={[styles.input, {color: colors.primaryText}]}
+        value={value}
+        onChangeText={onChangeText}
         placeholder="Type a message..."
         placeholderTextColor={colors.placeholderText}
-        editable={!disabled}
+        multiline
+        maxHeight={100}
       />
       <TouchableOpacity
-        onPress={handleSend}
-        style={styles.sendButton}
+        onPress={onSend}
+        style={styles.iconButton}
         disabled={disabled}>
         <Icon
           name="send"
@@ -52,19 +58,25 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    marginTop: 5,
+    borderRadius: 24,
+    paddingHorizontal: 8,
+    margin: 8,
+    elevation: 2,
+    shadowColor: Platform.OS === 'android' ? '#000' : '#888',
+    shadowOpacity: 0.2,
+    shadowOffset: {width: 0, height: 1},
+    shadowRadius: 2,
   },
   input: {
     flex: 1,
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    fontSize: constants.fontSizes.small,
+    paddingHorizontal: 12,
+    fontSize: constants.fontSizes.medium,
+    maxHeight: 100,
   },
-  sendButton: {
-    marginLeft: 10,
-    padding: 10,
+  iconButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 8,
   },
 });
 
