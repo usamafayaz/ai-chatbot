@@ -57,7 +57,6 @@ const ChatScreen = () => {
     fetchData();
   }, []);
 
-  // Rest of the time-based greeting function remains the same
   const getTimeBasedGreeting = () => {
     const currentHour = new Date().getHours();
 
@@ -70,7 +69,7 @@ const ChatScreen = () => {
     }
   };
 
-  // File to generative part function remains the same
+  // File to generative part function
   const fileToGenerativePart = async uri => {
     try {
       let base64Data;
@@ -93,7 +92,7 @@ const ChatScreen = () => {
     }
   };
 
-  // Image pick handler remains the same
+  // Image pick handler
   const handleImagePick = async () => {
     try {
       const result = await ImagePicker.openPicker({
@@ -117,7 +116,6 @@ const ChatScreen = () => {
     }
   };
 
-  // Modified send handler to use chatSession
   const handleSend = async () => {
     if (!chatSession) return;
     if (!selectedImage && !inputText.trim()) return;
@@ -191,7 +189,7 @@ const ChatScreen = () => {
     }
   };
 
-  // Message long press handler remains the same
+  // Message long press handler
   const handleMessageLongPress = text => {
     Clipboard.setString(text);
     Toast.show({
@@ -203,7 +201,6 @@ const ChatScreen = () => {
     });
   };
 
-  // Render method remains the same as in the original code
   return (
     <View
       style={[styles.container, {backgroundColor: colors.primaryBackground}]}>
@@ -286,7 +283,7 @@ const styles = StyleSheet.create({
   welcomeContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    paddingVertical: 15,
     borderRadius: 10,
     margin: 10,
     shadowColor: '#000',
@@ -303,10 +300,10 @@ const styles = StyleSheet.create({
   iconStyle: {
     width: 40,
     height: 40,
-    marginRight: 12,
+    marginRight: 15,
   },
   welcomeTitle: {
-    fontSize: constants.fontSizes.xlarge,
+    fontSize: constants.fontSizes.large,
     fontFamily: constants.fontFamilies.bold,
     marginVertical: 10,
     textAlign: 'center',

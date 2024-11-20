@@ -42,7 +42,7 @@ const ChatHeader = () => {
       <Text
         allowFontScaling={false}
         style={[styles.headerText, {color: colors.primaryText}]}>
-        AI Chat Bot
+        Talkie
       </Text>
 
       {/* Theme toggle on the right */}
@@ -69,9 +69,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: constants.fontSizes.large,
-    fontWeight: 'bold',
     fontFamily: constants.fontFamilies.bold,
-    fontStyle: 'italic',
   },
   iconLeftContainer: {
     justifyContent: 'center',

@@ -47,9 +47,14 @@ const fontSizes = {
 };
 
 const fontFamilies = {
-  regular: 'Roboto-Regular',
-  bold: 'Roboto-Bold',
-  monospace: 'monospace',
+  regular: 'Poppins-Regular', // Regular variant
+  light: 'Poppins-Light', // Light variant
+  medium: 'Poppins-Medium', // Medium variant
+  bold: 'Poppins-Bold', // Bold variant
+  extraBold: 'Poppins-ExtraBold', // ExtraBold variant
+  black: 'Poppins-Black', // Black variant
+  boldItalic: 'Poppins-BoldItalic', // Bold Italic variant
+  monospace: 'Poppins-Bold', // Monospace variant (using Poppins-Bold)
 };
 
 const screen = {width, height};

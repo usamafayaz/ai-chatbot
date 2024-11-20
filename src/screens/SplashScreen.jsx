@@ -3,7 +3,7 @@ import {Image, StyleSheet, View} from 'react-native';
 import {useSelector} from 'react-redux';
 import {getThemeColors} from '../config/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 
 const SplashScreen = () => {
   const currentTheme = useSelector(state => state.theme.theme);
@@ -16,8 +16,18 @@ const SplashScreen = () => {
         await new Promise(resolve => setTimeout(resolve, 1500));
 
         nickname
-          ? navigation.navigate('ChatScreen')
-          : navigation.navigate('Setup');
+          ? navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{name: 'ChatScreen'}],
+              }),
+            )
+          : navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{name: 'Setup'}],
+              }),
+            );
       } catch (error) {
         console.error('Error determining initial route:', error);
         setInitialRoute('Setup');

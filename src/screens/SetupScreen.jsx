@@ -16,6 +16,7 @@ import {getThemeColors} from '../config/constants';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CommonActions} from '@react-navigation/native';
+import {constants} from '../config/constants'; // Import constants
 
 const SetupScreen = ({navigation}) => {
   const [nickname, setNickname] = useState('');
@@ -32,6 +33,7 @@ const SetupScreen = ({navigation}) => {
     };
     getNickname();
   }, []);
+
   const handleImagePick = async () => {
     try {
       const result = await ImagePicker.openPicker({
@@ -86,9 +88,8 @@ const SetupScreen = ({navigation}) => {
         barStyle={'light-content'}
       />
       <View style={styles.headerContainer}>
-        <Icon name="robot" size={50} color={colors.primary} />
         <Text style={[styles.appName, {color: colors.primaryText}]}>
-          AIChatBot
+          Talkie
         </Text>
       </View>
 
@@ -112,7 +113,13 @@ const SetupScreen = ({navigation}) => {
                 color={colors.placeholderText}
               />
             </View>
-            <Text style={{color: colors.placeholderText, marginTop: 10}}>
+            <Text
+              style={[
+                {
+                  color: colors.placeholderText,
+                },
+                styles.addPhotoText,
+              ]}>
               Add Profile Photo
             </Text>
           </View>
@@ -133,7 +140,13 @@ const SetupScreen = ({navigation}) => {
       <TouchableOpacity
         style={[styles.button, {backgroundColor: colors.primary}]}
         onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Start Chatting</Text>
+        <Text
+          style={[
+            styles.buttonText,
+            {fontFamily: constants.fontFamilies.bold},
+          ]}>
+          Start Chatting
+        </Text>
       </TouchableOpacity>
 
       <View style={[styles.decorativeCircle, styles.bottomLeftCircle]} />
@@ -156,9 +169,10 @@ const styles = StyleSheet.create({
     marginBottom: '60%',
   },
   appName: {
+    fontFamily: constants.fontFamilies.bold,
     fontSize: 28,
-    fontWeight: 'bold',
     marginLeft: 10,
+    marginTop: 30,
   },
   description: {
     textAlign: 'center',
@@ -184,11 +198,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#CCC',
   },
+  addPhotoText: {marginTop: 10, fontFamily: constants.fontFamilies.medium},
   input: {
     width: '100%',
     padding: 12,
     borderRadius: 8,
     marginBottom: 20,
+    fontFamily: constants.fontFamilies.regular,
   },
   button: {
     paddingVertical: 12,
@@ -199,7 +215,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: 'bold',
     color: '#FFFFFF',
   },
   decorativeCircle: {

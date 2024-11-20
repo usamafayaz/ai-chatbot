@@ -40,11 +40,7 @@ const ChatMessages = ({messages, onMessageLongPress, isLoading}) => {
           <Text
             allowFontScaling={false}
             key={lineIndex}
-            style={[
-              styles.subheading,
-              styles.marginBottom,
-              {color: colors.primaryText},
-            ]}>
+            style={[styles.marginBottom, {color: colors.primaryText}]}>
             {number} {headingText}
           </Text>
         );
@@ -127,7 +123,7 @@ const ChatMessages = ({messages, onMessageLongPress, isLoading}) => {
                 allowFontScaling={false}
                 key={`${lineIndex}-${partIndex}`}
                 style={[
-                  styles.subheading,
+                  styles.subheadingBold,
                   styles.marginBottom,
                   {color: colors.primaryText},
                 ]}>
@@ -148,7 +144,7 @@ const ChatMessages = ({messages, onMessageLongPress, isLoading}) => {
               <Text
                 allowFontScaling={false}
                 key={`${lineIndex}-${partIndex}`}
-                style={[styles.bodyText, {color: colors.secondaryText}]}>
+                style={[styles.bodyText, {color: colors.primaryText}]}>
                 {part}
               </Text>
             );
@@ -250,21 +246,22 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: constants.fontSizes.xlarge,
-    fontWeight: 'bold',
+    fontFamily: constants.fontFamilies.bold,
   },
-  subheading: {
+  subheadingBold: {
     fontSize: constants.fontSizes.medium,
-    fontWeight: 'bold',
-    fontStyle: 'italic',
     marginVertical: 10,
+    fontFamily: constants.fontFamilies.medium,
   },
   bodyText: {
+    fontFamily: constants.fontFamilies.regular,
     fontSize: constants.fontSizes.small,
     lineHeight: 24,
   },
   italic: {
     fontStyle: 'italic',
     fontSize: constants.fontSizes.small,
+    fontFamily: constants.fontFamilies.regular,
   },
   codeBlock: {
     borderRadius: 4,
@@ -276,7 +273,7 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   codeText: {
-    fontFamily: constants.fontFamilies.monospace,
+    fontFamily: constants.fontFamilies.medium,
     fontSize: constants.fontSizes.small - 3,
   },
   copyButton: {

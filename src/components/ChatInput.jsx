@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: constants.fontSizes.medium,
     maxHeight: 100,
+    fontFamily: constants.fontFamilies.regular,
   },
   iconButton: {
     justifyContent: 'center',
