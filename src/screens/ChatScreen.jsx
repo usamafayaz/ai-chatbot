@@ -109,7 +109,7 @@ const ChatScreen = () => {
       Toast.show({
         type: 'success',
         position: 'bottom',
-        text1: 'Failed to select image',
+        text1: 'Image selection cancelled',
         visibilityTime: 2000,
         autoHide: true,
       });

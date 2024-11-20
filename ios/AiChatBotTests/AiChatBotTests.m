@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface AiChatBotTests : XCTestCase
+@interface TalkieTests : XCTestCase
 
 @end
 
-@implementation AiChatBotTests
+@implementation TalkieTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL (^)(UIView *view))test
 {

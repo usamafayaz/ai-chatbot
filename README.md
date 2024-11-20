@@ -1,10 +1,10 @@
-# AI ChatBot
+# Talkie (AI ChatBot)
 
-AI ChatBot is a mobile application developed in React Native that allows users to have conversations with Google's Generative AI (Gemini API).
+Talkie is a mobile application developed in React Native that allows users to have conversations with Google's Generative AI (Gemini API).
 
 ## Overview
 
-AI ChatBot enables users to send messages, upload images for AI-generated descriptions, and enjoy continuous conversational interactions thanks to the AI's memory capabilities.
+Talkie enables users to send messages, upload images for AI-generated descriptions, and enjoy continuous conversational interactions thanks to the AI's memory capabilities.
 
 ## Features
 
@@ -12,7 +12,7 @@ AI ChatBot enables users to send messages, upload images for AI-generated descri
 
 - **Send Messages**: Users can input messages and send them to the Gemini API.
 - **Receive Responses**: The AI generates conversational responses based on user input.
-- **Memory Retention**: The AI remembers previous messages in the chat, enabling a continuous and meaningful conversation.
+- **Memory Retention**: The AI remembers previous messages in the current chat, enabling a continuous and meaningful conversation.
 
 ### Real-time Chat
 
@@ -42,13 +42,13 @@ AI ChatBot enables users to send messages, upload images for AI-generated descri
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/usamafayaz/ai-chatbot.git
+   git clone https://github.com/usamafayaz/talkie-ai-chatbot.git
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd ai-chatbot
+   cd talkie-ai-chatbot
    ```
 
 3. Install React Native packages and dependencies:

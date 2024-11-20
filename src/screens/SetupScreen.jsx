@@ -50,7 +50,7 @@ const SetupScreen = ({navigation}) => {
       Toast.show({
         type: 'error',
         position: 'bottom',
-        text1: 'Failed to select image',
+        text1: 'Image selection cancelled',
         visibilityTime: 2000,
         autoHide: true,
       });

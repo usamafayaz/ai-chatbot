@@ -1,4 +1,4 @@
-package com.aichatbot
+package com.talkie
 
 import android.app.Application
 import com.facebook.react.PackageList
