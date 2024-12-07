@@ -67,3 +67,5 @@ Talkie enables users to send messages, upload images for AI-generated descriptio
 ## Contact
 
 For any inquiries, please contact [usama.fayyaz157@gmail.com].
+
+![Alt text](./screenshots/screenshot.png)
